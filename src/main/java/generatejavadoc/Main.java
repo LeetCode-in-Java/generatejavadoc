@@ -61,7 +61,6 @@ public class Main {
                         "    board = [[",
                         "    grid = [[",
                         " = [[",
-                        ",**",
                         "**,",
                         "**]",
                         "(**",
@@ -74,7 +73,6 @@ public class Main {
                         "    board = [ [",
                         "    grid = [ [",
                         " = \\[\\[",
-                        ", **",
                         "** ,",
                         "** ]",
                         "( **",
@@ -103,6 +101,7 @@ public class Main {
                                                     fromStr,
                                                     toStr)
                                             .replace("`**", "` **")
+                                            .replace(",**", ", **")
                                             .replace("/*", "{@literal /}*")
                                             .replace("*/", "*{@literal /}")
                                     + "\n**/";
