@@ -102,6 +102,8 @@ public class Main {
                                                     toStr)
                                             .replace("`**", "` **")
                                             .replace(",**", ", **")
+                                            .replace("<ins>**", "<ins> **")
+                                            .replace("**</ins>", "** </ins>")
                                             .replace("/*", "{@literal /}*")
                                             .replace("*/", "*{@literal /}")
                                     + "\n**/";
