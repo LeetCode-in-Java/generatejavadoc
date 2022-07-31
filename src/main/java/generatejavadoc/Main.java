@@ -64,7 +64,8 @@ public class Main {
                         "**,",
                         "**]",
                         "(**",
-                        "**)"
+                        "**)",
+                        "[[]",
                     };
                     String[] toStr = {
                         "(\"{ {",
@@ -76,7 +77,8 @@ public class Main {
                         "** ,",
                         "** ]",
                         "( **",
-                        "** )"
+                        "** )",
+                        "[ []"
                     };
                     String readmeMdJavadoc =
                             "/**\n"
