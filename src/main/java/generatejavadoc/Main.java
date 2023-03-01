@@ -16,8 +16,7 @@ import java.util.stream.Collectors;
 public class Main {
     private static final Pattern PATTERN = Pattern.compile("\\r?\\n");
 
-    private static void fillFilesRecursively(
-            Path directory, final List<File> resultFiles)
+    private static void fillFilesRecursively(Path directory, final List<File> resultFiles)
             throws IOException {
         Files.walkFileTree(
                 directory,
@@ -66,6 +65,21 @@ public class Main {
                         "(**",
                         "**)",
                         "[[]",
+                        "<code>",
+                        "</code>",
+                        "<sub>",
+                        "</sub>",
+                        "<sup>",
+                        "</sup>",
+                        "<ins>",
+                        "</ins>",
+                        "<",
+                        ">",
+                        "&"
+                    };
+                    String[] fromStr2 = {
+                        "[code]", "[/code]", "[sub]", "[/sub]", "[sup]", "[/sup]", "[ins]",
+                        "[/ins]",
                     };
                     String[] toStr = {
                         "(\"{ {",
@@ -78,30 +92,54 @@ public class Main {
                         "** ]",
                         "( **",
                         "** )",
-                        "[ []"
+                        "[ []",
+                        "[code]",
+                        "[/code]",
+                        "[sub]",
+                        "[/sub]",
+                        "[sup]",
+                        "[/sup]",
+                        "[ins]",
+                        "[/ins]",
+                        "&lt;",
+                        "&gt;",
+                        "&amp;"
+                    };
+                    String[] toStr2 = {
+                        "<code>", "</code>", "<sub>", "</sub>", "<sup>", "</sup>", "<ins>",
+                        "</ins>",
                     };
                     String readmeMdJavadoc =
                             "/**\n"
                                     + StringUtils.replaceEach(
-                                                    PATTERN.splitAsStream(readmeMdText)
-                                                            .map(
-                                                                    line -> {
-                                                                        String firstLine =
-                                                                                line.replace(
-                                                                                                "\\.",
-                                                                                                " -")
-                                                                                        + "\\.";
-                                                                        String str =
-                                                                                index[0]++ == 0
-                                                                                        ? firstLine
-                                                                                        : line;
-                                                                        return line.isEmpty()
-                                                                                ? " *"
-                                                                                : " * " + str;
-                                                                    })
-                                                            .collect(Collectors.joining("\n")),
-                                                    fromStr,
-                                                    toStr)
+                                                    StringUtils.replaceEach(
+                                                            PATTERN.splitAsStream(readmeMdText)
+                                                                    .map(
+                                                                            line -> {
+                                                                                String firstLine =
+                                                                                        line
+                                                                                                        .replace(
+                                                                                                                "\\.",
+                                                                                                                " -")
+                                                                                                + "\\.";
+                                                                                String str =
+                                                                                        index[0]++
+                                                                                                        == 0
+                                                                                                ? firstLine
+                                                                                                : line;
+                                                                                return line
+                                                                                                .isEmpty()
+                                                                                        ? " *"
+                                                                                        : " * "
+                                                                                                + str;
+                                                                            })
+                                                                    .collect(
+                                                                            Collectors.joining(
+                                                                                    "\n")),
+                                                            fromStr,
+                                                            toStr),
+                                                    fromStr2,
+                                                    toStr2)
                                             .replace("`**", "` **")
                                             .replace(",**", ", **")
                                             .replace("<ins>**", "<ins> **")
