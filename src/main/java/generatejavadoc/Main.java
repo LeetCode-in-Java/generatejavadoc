@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
 
 public class Main {
     private static final Pattern PATTERN = Pattern.compile("\\r?\\n");
-    private static final Pattern CODE_BLOCK = Pattern.compile("(`)(.*?)(`)");
 
     private static void fillFilesRecursively(Path directory, final List<File> resultFiles)
             throws IOException {
@@ -112,20 +111,41 @@ public class Main {
                     };
                     String readmeMdJavadoc =
                             "/**\n"
-                                    + replaceCode(
-                                            StringUtils.replaceEach(
-                                                            StringUtils.replaceEach(
-                                                                    getText(readmeMdText, index),
-                                                                    fromStr,
-                                                                    toStr),
-                                                            fromStr2,
-                                                            toStr2)
-                                                    .replace("`**", "` **")
-                                                    .replace(",**", ", **")
-                                                    .replace("<ins>**", "<ins> **")
-                                                    .replace("**</ins>", "** </ins>")
-                                                    .replace("/*", "{@literal /}*")
-                                                    .replace("*/", "*{@literal /}"))
+                                    + StringUtils.replaceEach(
+                                                    StringUtils.replaceEach(
+                                                            PATTERN.splitAsStream(readmeMdText)
+                                                                    .map(
+                                                                            line -> {
+                                                                                String firstLine =
+                                                                                        line
+                                                                                                        .replace(
+                                                                                                                "\\.",
+                                                                                                                " -")
+                                                                                                + "\\.";
+                                                                                String str =
+                                                                                        index[0]++
+                                                                                                        == 0
+                                                                                                ? firstLine
+                                                                                                : line;
+                                                                                return line
+                                                                                                .isEmpty()
+                                                                                        ? " *"
+                                                                                        : " * "
+                                                                                                + str;
+                                                                            })
+                                                                    .collect(
+                                                                            Collectors.joining(
+                                                                                    "\n")),
+                                                            fromStr,
+                                                            toStr),
+                                                    fromStr2,
+                                                    toStr2)
+                                            .replace("`**", "` **")
+                                            .replace(",**", ", **")
+                                            .replace("<ins>**", "<ins> **")
+                                            .replace("**</ins>", "** </ins>")
+                                            .replace("/*", "{@literal /}*")
+                                            .replace("*/", "*{@literal /}")
                                     + "\n**/";
                     String publicClass =
                             solutionJavaText.contains("@SuppressWarnings")
@@ -135,21 +155,6 @@ public class Main {
                 }
             }
         }
-    }
-
-    private static String getText(String readmeMdText, int[] index) {
-        return PATTERN.splitAsStream(readmeMdText)
-                .map(
-                        line -> {
-                            String firstLine = line.replace("\\.", " -") + "\\.";
-                            String str = index[0]++ == 0 ? firstLine : line;
-                            return line.isEmpty() ? " *" : " * " + str;
-                        })
-                .collect(Collectors.joining("\n"));
-    }
-
-    private static String replaceCode(String code) {
-        return CODE_BLOCK.matcher(code).replaceAll("<code>$2</code>");
     }
 
     private static byte[] getBytes(
