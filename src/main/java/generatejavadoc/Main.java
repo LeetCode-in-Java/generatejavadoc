@@ -4,10 +4,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -44,114 +41,121 @@ public class Main {
             ind++;
             final byte[] readmeMd = Files.readAllBytes(Paths.get(file.getAbsolutePath()));
             String readmeMdText = new String(readmeMd, UTF_8);
+            PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:*.{java,kt}");
             try (DirectoryStream<Path> dirStream =
                     Files.newDirectoryStream(
-                            Paths.get(file.getAbsolutePath().replace("readme.md", "")), "*.java")) {
+                            Paths.get(file.getAbsolutePath().replace("readme.md", "")))) {
                 for (Path entry : dirStream) {
-                    File javaFile = entry.toFile();
-                    Path path = Paths.get(javaFile.getAbsolutePath());
-                    final byte[] solutionJava = Files.readAllBytes(path);
-                    String solutionJavaText = new String(solutionJava, UTF_8);
-                    int[] index = {0};
-                    String[] fromStr = {
-                        "(\"{{",
-                        "= \"{{",
-                        "\n- [",
-                        "    board = [[",
-                        "    grid = [[",
-                        " = [[",
-                        "**,",
-                        "**]",
-                        "(**",
-                        "**)",
-                        "[[]",
-                        "<code>",
-                        "</code>",
-                        "<sub>",
-                        "</sub>",
-                        "<sup>",
-                        "</sup>",
-                        "<ins>",
-                        "</ins>",
-                        "<",
-                        ">",
-                        "&"
-                    };
-                    String[] fromStr2 = {
-                        "[code]", "[/code]", "[sub]", "[/sub]", "[sup]", "[/sup]", "[ins]",
-                        "[/ins]",
-                    };
-                    String[] toStr = {
-                        "(\"{ {",
-                        "= \"{ {",
-                        "\n- \\[",
-                        "    board = [ [",
-                        "    grid = [ [",
-                        " = \\[\\[",
-                        "** ,",
-                        "** ]",
-                        "( **",
-                        "** )",
-                        "[ []",
-                        "[code]",
-                        "[/code]",
-                        "[sub]",
-                        "[/sub]",
-                        "[sup]",
-                        "[/sup]",
-                        "[ins]",
-                        "[/ins]",
-                        "&lt;",
-                        "&gt;",
-                        "&amp;"
-                    };
-                    String[] toStr2 = {
-                        "<code>", "</code>", "<sub>", "</sub>", "<sup>", "</sup>", "<ins>",
-                        "</ins>",
-                    };
-                    String readmeMdJavadoc =
-                            "/**\n"
-                                    + StringUtils.replaceEach(
-                                                    StringUtils.replaceEach(
-                                                            PATTERN.splitAsStream(readmeMdText)
-                                                                    .map(
-                                                                            line -> {
-                                                                                String firstLine =
-                                                                                        line
-                                                                                                        .replace(
-                                                                                                                "\\.",
-                                                                                                                " -")
-                                                                                                + "\\.";
-                                                                                String str =
-                                                                                        index[0]++
-                                                                                                        == 0
-                                                                                                ? firstLine
-                                                                                                : line;
-                                                                                return line
-                                                                                                .isEmpty()
-                                                                                        ? " *"
-                                                                                        : " * "
-                                                                                                + str;
-                                                                            })
-                                                                    .collect(
-                                                                            Collectors.joining(
-                                                                                    "\n")),
-                                                            fromStr,
-                                                            toStr),
-                                                    fromStr2,
-                                                    toStr2)
-                                            .replace("`**", "` **")
-                                            .replace(",**", ", **")
-                                            .replace("<ins>**", "<ins> **")
-                                            .replace("**</ins>", "** </ins>")
-                                            .replace("/*", "{@literal /}*")
-                                            .replace("*/", "*{@literal /}")
-                                    + "\n**/";
-                    String publicClass =
-                            solutionJavaText.contains("@SuppressWarnings")
-                                    ? "@SuppressWarnings"
-                                    : "public class ";
-                    Files.write(path, getBytes(solutionJavaText, readmeMdJavadoc, publicClass));
+                    if (matcher.matches(entry.getFileName())) {
+                        File javaFile = entry.toFile();
+                        Path path = Paths.get(javaFile.getAbsolutePath());
+                        final byte[] solutionJava = Files.readAllBytes(path);
+                        String solutionJavaText = new String(solutionJava, UTF_8);
+                        int[] index = {0};
+                        String[] fromStr = {
+                            "(\"{{",
+                            "= \"{{",
+                            "\n- [",
+                            "    board = [[",
+                            "    grid = [[",
+                            " = [[",
+                            "**,",
+                            "**]",
+                            "(**",
+                            "**)",
+                            "[[]",
+                            "<code>",
+                            "</code>",
+                            "<sub>",
+                            "</sub>",
+                            "<sup>",
+                            "</sup>",
+                            "<ins>",
+                            "</ins>",
+                            "<",
+                            ">",
+                            "&"
+                        };
+                        String[] fromStr2 = {
+                            "[code]", "[/code]", "[sub]", "[/sub]", "[sup]", "[/sup]", "[ins]",
+                            "[/ins]",
+                        };
+                        String[] toStr = {
+                            "(\"{ {",
+                            "= \"{ {",
+                            "\n- \\[",
+                            "    board = [ [",
+                            "    grid = [ [",
+                            " = \\[\\[",
+                            "** ,",
+                            "** ]",
+                            "( **",
+                            "** )",
+                            "[ []",
+                            "[code]",
+                            "[/code]",
+                            "[sub]",
+                            "[/sub]",
+                            "[sup]",
+                            "[/sup]",
+                            "[ins]",
+                            "[/ins]",
+                            "&lt;",
+                            "&gt;",
+                            "&amp;"
+                        };
+                        String[] toStr2 = {
+                            "<code>", "</code>", "<sub>", "</sub>", "<sup>", "</sup>", "<ins>",
+                            "</ins>",
+                        };
+                        String readmeMdJavadoc =
+                                "/**\n"
+                                        + StringUtils.replaceEach(
+                                                        StringUtils.replaceEach(
+                                                                PATTERN.splitAsStream(readmeMdText)
+                                                                        .map(
+                                                                                line -> {
+                                                                                    String
+                                                                                            firstLine =
+                                                                                                    line
+                                                                                                                    .replace(
+                                                                                                                            "\\.",
+                                                                                                                            " -")
+                                                                                                            + "\\.";
+                                                                                    String str =
+                                                                                            index[
+                                                                                                                    0]++
+                                                                                                            == 0
+                                                                                                    ? firstLine
+                                                                                                    : line;
+                                                                                    return line
+                                                                                                    .isEmpty()
+                                                                                            ? " *"
+                                                                                            : " * "
+                                                                                                    + str;
+                                                                                })
+                                                                        .collect(
+                                                                                Collectors.joining(
+                                                                                        "\n")),
+                                                                fromStr,
+                                                                toStr),
+                                                        fromStr2,
+                                                        toStr2)
+                                                .replace("`**", "` **")
+                                                .replace(",**", ", **")
+                                                .replace("<ins>**", "<ins> **")
+                                                .replace("**</ins>", "** </ins>")
+                                                .replace("/*", "{@literal /}*")
+                                                .replace("*/", "*{@literal /}")
+                                        + "\n**/";
+                        String publicClass =
+                                solutionJavaText.contains("@SuppressWarnings")
+                                        ? "@SuppressWarnings"
+                                        : solutionJavaText.contains("public class ")
+                                                ? "public class "
+                                                : "class ";
+                        Files.write(path, getBytes(solutionJavaText, readmeMdJavadoc, publicClass));
+                    }
                 }
             }
         }
