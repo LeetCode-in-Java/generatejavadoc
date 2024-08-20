@@ -114,26 +114,10 @@ public class Main {
                                                         StringUtils.replaceEach(
                                                                 PATTERN.splitAsStream(readmeMdText)
                                                                         .map(
-                                                                                line -> {
-                                                                                    String
-                                                                                            firstLine =
-                                                                                                    line
-                                                                                                                    .replace(
-                                                                                                                            "\\.",
-                                                                                                                            " -")
-                                                                                                            + "\\.";
-                                                                                    String str =
-                                                                                            index[
-                                                                                                                    0]++
-                                                                                                            == 0
-                                                                                                    ? firstLine
-                                                                                                    : line;
-                                                                                    return line
-                                                                                                    .isEmpty()
-                                                                                            ? " *"
-                                                                                            : " * "
-                                                                                                    + str;
-                                                                                })
+                                                                                line ->
+                                                                                        getString(
+                                                                                                line,
+                                                                                                index))
                                                                         .collect(
                                                                                 Collectors.joining(
                                                                                         "\n")),
@@ -159,6 +143,12 @@ public class Main {
                 }
             }
         }
+    }
+
+    private static String getString(String line, int[] index) {
+        String firstLine = line.replace("\\.", " -") + "\\.";
+        String str = index[0]++ == 0 ? firstLine : line;
+        return line.isEmpty() ? " *" : " * " + str;
     }
 
     private static byte[] getBytes(
