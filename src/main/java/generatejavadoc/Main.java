@@ -108,21 +108,8 @@ public class Main {
                             "<code>", "</code>", "<sub>", "</sub>", "<sup>", "</sup>", "<ins>",
                             "</ins>",
                         };
-                        String javaLinks =
-                                " * [![](https://img.shields.io/github/stars/javadev/LeetCode-in-Java?style=flat-square)](https://github.com/javadev/LeetCode-in-Java)\n"
-                                        + " * [![](https://img.shields.io/github/forks/javadev/LeetCode-in-Java?style=flat-square)](https://github.com/javadev/LeetCode-in-Java/fork)\n"
-                                        + " *\n";
-                        String kotlinLinks =
-                                " * [![](https://img.shields.io/github/stars/javadev/LeetCode-in-Kotlin?style=flat-square)](https://github.com/javadev/LeetCode-in-Kotlin)\n"
-                                        + " * [![](https://img.shields.io/github/forks/javadev/LeetCode-in-Kotlin?style=flat-square)](https://github.com/javadev/LeetCode-in-Kotlin/fork)\n"
-                                        + " *\n";
                         String readmeMdJavadoc =
                                 "/**\n"
-                                        + (javaFile.getAbsolutePath().endsWith(".java")
-                                                ? javaLinks
-                                                : javaFile.getAbsolutePath().endsWith(".kt")
-                                                        ? kotlinLinks
-                                                        : "")
                                         + StringUtils.replaceEach(
                                                         StringUtils.replaceEach(
                                                                 PATTERN.splitAsStream(readmeMdText)
