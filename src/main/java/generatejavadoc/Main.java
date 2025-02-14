@@ -13,6 +13,11 @@ import java.util.stream.Collectors;
 public class Main {
     private static final Pattern PATTERN = Pattern.compile("\\r?\\n");
 
+    private enum Type {
+        JAVA,
+        KOTLIN
+    }
+
     private static void fillFilesRecursively(Path directory, final List<File> resultFiles)
             throws IOException {
         Files.walkFileTree(
@@ -58,7 +63,7 @@ public class Main {
                             "\n- [",
                             "    board = [[",
                             "    grid = [[",
-                            " = [[",
+                            "[[",
                             "**,",
                             "**]",
                             "(**",
@@ -86,7 +91,7 @@ public class Main {
                             "\n- \\[",
                             "    board = [ [",
                             "    grid = [ [",
-                            " = \\[\\[",
+                            "\\[\\[",
                             "** ,",
                             "** ]",
                             "( **",
@@ -108,6 +113,12 @@ public class Main {
                             "<code>", "</code>", "<sub>", "</sub>", "<sup>", "</sup>", "<ins>",
                             "</ins>",
                         };
+                        Type type =
+                                (javaFile.getAbsolutePath().endsWith(".java")
+                                        ? Type.JAVA
+                                        : javaFile.getAbsolutePath().endsWith(".kt")
+                                                ? Type.KOTLIN
+                                                : null);
                         String readmeMdJavadoc =
                                 "/**\n"
                                         + StringUtils.replaceEach(
@@ -117,7 +128,8 @@ public class Main {
                                                                                 line ->
                                                                                         getString(
                                                                                                 line,
-                                                                                                index))
+                                                                                                index,
+                                                                                                type))
                                                                         .collect(
                                                                                 Collectors.joining(
                                                                                         "\n")),
@@ -145,8 +157,8 @@ public class Main {
         }
     }
 
-    private static String getString(String line, int[] index) {
-        String firstLine = line.replace("\\.", " -") + "\\.";
+    private static String getString(String line, int[] index, Type type) {
+        String firstLine = line.replace("\\.", " -") + (type == Type.JAVA ? "\\." : ".");
         String str = index[0]++ == 0 ? firstLine : line;
         return line.isEmpty() ? " *" : " * " + str;
     }
