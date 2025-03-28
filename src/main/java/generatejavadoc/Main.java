@@ -5,6 +5,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
+import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -63,7 +64,6 @@ public class Main {
                             "\n- [",
                             "    board = [[",
                             "    grid = [[",
-                            "[[",
                             "**,",
                             "**]",
                             "(**",
@@ -91,7 +91,6 @@ public class Main {
                             "\n- \\[",
                             "    board = [ [",
                             "    grid = [ [",
-                            "\\[\\[",
                             "** ,",
                             "** ]",
                             "( **",
@@ -119,6 +118,12 @@ public class Main {
                                         : javaFile.getAbsolutePath().endsWith(".kt")
                                                 ? Type.KOTLIN
                                                 : null);
+                        if (type == Type.JAVA) {
+                            fromStr = Arrays.copyOf(fromStr, fromStr.length + 1);
+                            fromStr[fromStr.length - 1] = "[[";
+                            toStr = Arrays.copyOf(toStr, toStr.length + 1);
+                            toStr[toStr.length - 1] = "[[";
+                        }
                         String readmeMdJavadoc =
                                 "/**\n"
                                         + StringUtils.replaceEach(
