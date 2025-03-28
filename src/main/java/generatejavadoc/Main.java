@@ -122,7 +122,7 @@ public class Main {
                             fromStr = Arrays.copyOf(fromStr, fromStr.length + 1);
                             fromStr[fromStr.length - 1] = "[[";
                             toStr = Arrays.copyOf(toStr, toStr.length + 1);
-                            toStr[toStr.length - 1] = "[[";
+                            toStr[toStr.length - 1] = "\\[\\[";
                         }
                         String readmeMdJavadoc =
                                 "/**\n"
