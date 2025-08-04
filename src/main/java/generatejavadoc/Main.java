@@ -79,7 +79,8 @@ public class Main {
                             "</ins>",
                             "<",
                             ">",
-                            "&"
+                            "&",
+                            "→"
                         };
                         String[] fromStr2 = {
                             "[code]", "[/code]", "[sub]", "[/sub]", "[sup]", "[/sup]", "[ins]",
@@ -106,7 +107,8 @@ public class Main {
                             "[/ins]",
                             "&lt;",
                             "&gt;",
-                            "&amp;"
+                            "&amp;",
+                            "&rarr;"
                         };
                         String[] toStr2 = {
                             "<code>", "</code>", "<sub>", "</sub>", "<sup>", "</sup>", "<ins>",
