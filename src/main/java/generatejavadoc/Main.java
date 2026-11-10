@@ -126,6 +126,10 @@ public class Main {
                             toStr = Arrays.copyOf(toStr, toStr.length + 1);
                             toStr[toStr.length - 1] = "\\[\\[";
                         }
+                        if (type == Type.KOTLIN) {
+                            fromStr = Arrays.copyOf(fromStr, fromStr.length - 4);
+                            toStr = Arrays.copyOf(toStr, toStr.length - 4);
+                        }
                         String readmeMdJavadoc =
                                 "/**\n"
                                         + StringUtils.replaceEach(
